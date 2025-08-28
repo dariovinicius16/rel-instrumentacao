@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    let texto = `📑 RELATÓRIO DE ATIVIDADES DE INSTRUMENTAÇÃO\n\n📅 DATA: ${data}\n🕐 HORA: ${hora}\n👷 TÉCNICO RESPONSÁVEL: ${tecnicosSelecionados}\n\nRESUMO:\nTOTAL: ${resumo.TOTAL}\nCONCLUÍDO: ${resumo.CONCLUÍDO}\nNÃO CONCLUÍDO: ${resumo["NÃO CONCLUÍDO"]}\nEM ANDAMENTO: ${resumo["EM ANDAMENTO"]}\n\n${textoAtividades}`;
+    let texto = `📑 RELATÓRIO DE ATIVIDADES DE INSTRUMENTAÇÃO\n\n📅 DATA: ${data}\n🕐 HORA: ${hora}\n👷 TÉCNICO(OS) RESPONSÁVEL(EIS): ${tecnicosSelecionados}\n\nRESUMO:\nTOTAL: ${resumo.TOTAL}\nCONCLUÍDO: ${resumo.CONCLUÍDO}\nNÃO CONCLUÍDO: ${resumo["NÃO CONCLUÍDO"]}\nEM ANDAMENTO: ${resumo["EM ANDAMENTO"]}\n\n${textoAtividades}`;
 
     const url = "https://wa.me/?text=" + encodeURIComponent(texto);
     window.open(url,"_blank");
