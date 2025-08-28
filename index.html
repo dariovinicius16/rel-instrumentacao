@@ -10,25 +10,18 @@
   html,body { height:100%; -webkit-overflow-scrolling:touch; }
   body { background:#f2f4f7; color:#333; display:flex; flex-direction:column; min-height:100vh; }
   
-  header {
-    background:#1f3b70; color:#fff; padding:1.2rem;
-    display:flex; align-items:center; justify-content:space-between;
-    font-size:1.5rem; position:sticky; top:0; z-index:100;
-  }
+  header { background:#1f3b70; color:#fff; padding:1.2rem; display:flex; align-items:center; justify-content:space-between; font-size:1.5rem; position:sticky; top:0; z-index:100; }
   header img { height:50px; background:#fff; padding:5px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
 
   .container { flex:1; overflow-y:auto; padding:1rem; -webkit-overflow-scrolling:touch; }
 
   .atividade { background:#fff; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1); padding:1rem; margin-bottom:1rem; }
   .atividade label { font-weight:bold; margin-bottom:0.3rem; display:block; text-transform:uppercase; }
-  .atividade input, .atividade textarea, .atividade select {
-    text-transform:uppercase; width:100%; padding:0.8rem; margin-bottom:0.8rem;
-    border:1px solid #ccc; border-radius:8px; font-size:1.1rem; background:#fafafa;
-  }
+  .atividade input, .atividade textarea, .atividade select { text-transform:uppercase; width:100%; padding:0.8rem; margin-bottom:0.8rem; border:1px solid #ccc; border-radius:8px; font-size:1.1rem; background:#fafafa; }
   .atividade textarea { min-height:100px; resize:vertical; }
-  
-  .btn-remover { background:#1f3b70; color:#fff; border:none; padding:0.6rem; border-radius:8px; cursor:pointer; width:100%; }
-  .btn-remover:hover { background:#12274b; }
+
+  .btn-remover, .btn-duplicar, .btn-concluir { background:#1f3b70; color:#fff; border:none; padding:0.6rem; border-radius:8px; cursor:pointer; width:48%; margin-right:2%; margin-top:0.5rem; }
+  .btn-remover:hover, .btn-duplicar:hover, .btn-concluir:hover { background:#12274b; }
 
   .btn-fab { position:fixed; bottom:80px; right:20px; background:#f1c40f; color:#fff; border:none; border-radius:50%; width:60px; height:60px; font-size:2rem; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:200; }
   .btn-fab:hover { background:#d4ac0d; }
@@ -40,11 +33,7 @@
   .btn-share { background:#f1c40f; color:#fff; }
   .btn-share:hover { background:#d4ac0d; }
 
-  @media (max-width:600px){
-    header{font-size:1.2rem;} 
-    .atividade input, .atividade textarea{font-size:1rem;} 
-    footer button{font-size:0.9rem; padding:0.7rem;}
-  }
+  @media (max-width:600px){ header{font-size:1.2rem;} .atividade input, .atividade textarea{font-size:1rem;} footer button{font-size:0.9rem; padding:0.7rem;} }
 </style>
 </head>
 <body>
@@ -60,6 +49,11 @@
       <input type="checkbox" id="dario_moraes" name="tecnico" value="DÁRIO / MORAES">
       <label for="dario_moraes">DÁRIO / MORAES</label>
     </div>
+    <div>
+      <input type="checkbox" id="outro_tecnico" name="tecnico" value="OUTRO TÉCNICO">
+      <label for="outro_tecnico">OUTRO TÉCNICO</label>
+    </div>
+    <button class="btn-concluir" onclick="marcarTodasConcluidas()">MARCAR TODAS COMO CONCLUÍDAS</button>
   </div>
 
   <div id="atividades"></div>
@@ -77,13 +71,13 @@
     <input type="text" placeholder="Ex: 40803175" required>
     
     <label>TIPO DE INSTRUMENTO:</label>
-    <input type="text" placeholder="EX: TRANSMISSOR DE NÍVEL DO TANQUE 01." required>
+    <input type="text" placeholder="Ex: Transmissor de pressão" required>
     
     <label>DESCRIÇÃO DA ATIVIDADE:</label>
-    <textarea placeholder="DESCRIÇÃO DA ATIVIDADE." required></textarea>
+    <textarea placeholder="Descrição detalhada da atividade" required></textarea>
     
     <label>ATIVIDADES REALIZADAS:</label>
-    <textarea placeholder="EX: REALIZADO LIMPEZA E CALIBRAÇÃO." required></textarea>
+    <textarea placeholder="Liste as atividades realizadas" required></textarea>
     
     <label>STATUS FINAL:</label>
     <select>
@@ -92,8 +86,9 @@
       <option>NÃO CONCLUÍDO</option>
       <option>EM ANDAMENTO</option>
     </select>
-    
+
     <button class="btn-remover" onclick="removerAtividade(this)">REMOVER</button>
+    <button class="btn-duplicar" onclick="duplicarAtividade(this)">DUPLICAR</button>
   </div>
 </template>
 
@@ -101,10 +96,20 @@
 document.addEventListener('DOMContentLoaded', () => {
   const atividadesDiv = document.getElementById("atividades");
 
+  // Carregar rascunho do localStorage
+  if(localStorage.getItem("atividadesInstrumentacao")){
+    atividadesDiv.innerHTML = localStorage.getItem("atividadesInstrumentacao");
+  }
+
+  function salvarRascunho(){
+    localStorage.setItem("atividadesInstrumentacao", atividadesDiv.innerHTML);
+  }
+
   function adicionarAtividade(){
     const template = document.getElementById("template-atividade");
     const clone = template.content.cloneNode(true);
     atividadesDiv.appendChild(clone);
+    salvarRascunho();
     setTimeout(()=>{ 
       const input = clone.querySelector("input,textarea,select");
       if(input){input.scrollIntoView({behavior:'smooth',block:'center'}); input.focus();}
@@ -114,7 +119,22 @@ document.addEventListener('DOMContentLoaded', () => {
   function removerAtividade(btn){
     if(confirm("TEM CERTEZA QUE DESEJA REMOVER ESTA ATIVIDADE?")){
       btn.parentElement.remove();
+      salvarRascunho();
     }
+  }
+
+  function duplicarAtividade(btn){
+    const atividade = btn.parentElement;
+    const clone = atividade.cloneNode(true);
+    atividadesDiv.appendChild(clone);
+    salvarRascunho();
+  }
+
+  function marcarTodasConcluidas(){
+    const selects = document.querySelectorAll("#atividades .atividade select");
+    selects.forEach(s=>s.value = "CONCLUÍDO");
+    salvarRascunho();
+    alert("TODAS AS ATIVIDADES FORAM MARCADAS COMO CONCLUÍDAS!");
   }
 
   function gerarPDF(){
@@ -123,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                      .map(e=>e.value).join(", ") || "NÃO SELECIONADO";
 
     let relatorio = document.createElement("div");
-
     relatorio.innerHTML = `
       <style>
         @page {margin:20mm;}
@@ -219,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const status = select.value.toUpperCase() || "-";
 
         if(resumo[status] !== undefined) resumo[status]++;
-        textoAtividades += `ATIVIDADE ${i+1}\nORDEM: ${ordem}\nINSTRUMENTO: ${instrumento}\nDESCRIÇÃO: ${descricao}\nATIVIDADES:\n ${realizadas}\nSTATUS FINAL: ${status}\n\n`;
+        textoAtividades += `ATIVIDADE ${i+1}\nORDEM: ${ordem}\nINSTRUMENTO: ${instrumento}\nDESCRIÇÃO: ${descricao}\nATIVIDADES: ${realizadas}\nSTATUS FINAL: ${status}\n\n`;
       }
     });
 
@@ -231,9 +250,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   adicionarAtividade();
   document.getElementById('btn-pdf').addEventListener('click', gerarPDF);
+
   window.adicionarAtividade = adicionarAtividade;
   window.removerAtividade = removerAtividade;
   window.compartilharWhatsApp = compartilharWhatsApp;
+  window.duplicarAtividade = duplicarAtividade;
+  window.marcarTodasConcluidas = marcarTodasConcluidas;
+
+  // Atualizar rascunho quando campos são alterados
+  atividadesDiv.addEventListener('input', salvarRascunho);
 });
 </script>
 </body>
