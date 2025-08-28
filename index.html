@@ -6,69 +6,58 @@
 <title>Relatório de Atividades - Instrumentação Industrial</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0;font-family:'Verdana', Arial, sans-serif;}
-  html,body{height:100%;-webkit-overflow-scrolling:touch;}
-  body{background:#f2f4f7;color:#333;display:flex;flex-direction:column;min-height:100vh;}
-  header{
-    background:#1f3b70;
-    color:#fff;
-    padding:1.2rem;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    font-size:1.5rem;
-    position:sticky;
-    top:0;
-    z-index:100;
+  * { box-sizing:border-box; margin:0; padding:0; font-family:'Verdana', Arial, sans-serif; }
+  html,body { height:100%; -webkit-overflow-scrolling:touch; }
+  body { background:#f2f4f7; color:#333; display:flex; flex-direction:column; min-height:100vh; }
+  
+  header {
+    background:#1f3b70; color:#fff; padding:1.2rem;
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:1.5rem; position:sticky; top:0; z-index:100;
   }
-  header img{
-    height:50px;
-    background:#fff;
-    padding:5px;
-    border-radius:8px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.3);
+  header img { height:50px; background:#fff; padding:5px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
+
+  .container { flex:1; overflow-y:auto; padding:1rem; -webkit-overflow-scrolling:touch; }
+
+  .atividade { background:#fff; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1); padding:1rem; margin-bottom:1rem; }
+  .atividade label { font-weight:bold; margin-bottom:0.3rem; display:block; text-transform:uppercase; }
+  .atividade input, .atividade textarea, .atividade select {
+    text-transform:uppercase; width:100%; padding:0.8rem; margin-bottom:0.8rem;
+    border:1px solid #ccc; border-radius:8px; font-size:1.1rem; background:#fafafa;
   }
-  .container{flex:1;overflow-y:auto;padding:1rem;-webkit-overflow-scrolling:touch;}
-  .atividade{background:#fff;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);padding:1rem;margin-bottom:1rem;}
-  .atividade label{font-weight:bold;margin-bottom:0.3rem;display:block;text-transform:uppercase;}
-  .atividade input, .atividade textarea{text-transform:uppercase;width:100%;padding:0.8rem;margin-bottom:0.8rem;border:1px solid #ccc;border-radius:8px;font-size:1.1rem;background:#fafafa;}
-  .atividade textarea{min-height:100px;resize:vertical;}
-  .btn-remover{background:#1f3b70;color:#fff;border:none;padding:0.6rem;border-radius:8px;cursor:pointer;width:100%;}
-  .btn-remover:hover{background:#12274b;}
-  .btn-fab{position:fixed;bottom:80px;right:20px;background:#f1c40f;color:#fff;border:none;border-radius:50%;width:60px;height:60px;font-size:2rem;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.3);z-index:200;}
-  .btn-fab:hover{background:#d4ac0d;}
-  footer{background:#fff;padding:0.8rem;display:flex;justify-content:space-around;border-top:1px solid #ddd;position:sticky;bottom:0;}
-  footer button{flex:1;margin:0 0.3rem;padding:0.8rem;font-size:1rem;border:none;border-radius:10px;cursor:pointer;color:#fff;}
-  .btn-pdf{background:#1f3b70;}
-  .btn-pdf:hover{background:#12274b;}
-  .btn-share{background:#f1c40f;color:#fff;}
-  .btn-share:hover{background:#d4ac0d;}
-  @media (max-width:600px){header{font-size:1.2rem;} .atividade input, .atividade textarea{font-size:1rem;} footer button{font-size:0.9rem;padding:0.7rem;}}
+  .atividade textarea { min-height:100px; resize:vertical; }
+  
+  .btn-remover { background:#1f3b70; color:#fff; border:none; padding:0.6rem; border-radius:8px; cursor:pointer; width:100%; }
+  .btn-remover:hover { background:#12274b; }
+
+  .btn-fab { position:fixed; bottom:80px; right:20px; background:#f1c40f; color:#fff; border:none; border-radius:50%; width:60px; height:60px; font-size:2rem; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:200; }
+  .btn-fab:hover { background:#d4ac0d; }
+
+  footer { background:#fff; padding:0.8rem; display:flex; justify-content:space-around; border-top:1px solid #ddd; position:sticky; bottom:0; }
+  footer button { flex:1; margin:0 0.3rem; padding:0.8rem; font-size:1rem; border:none; border-radius:10px; cursor:pointer; color:#fff; }
+  .btn-pdf { background:#1f3b70; }
+  .btn-pdf:hover { background:#12274b; }
+  .btn-share { background:#f1c40f; color:#fff; }
+  .btn-share:hover { background:#d4ac0d; }
+
+  @media (max-width:600px){
+    header{font-size:1.2rem;} 
+    .atividade input, .atividade textarea{font-size:1rem;} 
+    footer button{font-size:0.9rem; padding:0.7rem;}
+  }
 </style>
 </head>
 <body>
 <header>
-  📋 Relatório de Atividades
+  📋 RELATÓRIO DE ATIVIDADES
   <img src="https://media-genial-analisa.genialinvestimentos.com.br/wp-content/uploads/2021/12/22171726/m-dias-branco-logo-azul.png" alt="Logo M. Dias Branco">
 </header>
 
 <div class="container">
   <div class="atividade" id="tecnico-responsavel">
-    <label><b>Técnico Instrumentista Responsável:</b></label>
+    <label><b>TÉCNICO INSTRUMENTISTA RESPONSÁVEL:</b></label>
     <div>
-      <input type="radio" id="dario" name="tecnico" value="DÁRIO VINÍCIUS">
-      <label for="dario">DÁRIO VINÍCIUS</label><br>
-      <input type="radio" id="moraes" name="tecnico" value="MORAES JÚNIOR">
-      <label for="moraes">MORAES JÚNIOR</label><br>
-      <input type="radio" id="elany" name="tecnico" value="ELANY OLIVEIRA">
-      <label for="elany">ELANY OLIVEIRA</label><br>
-      <input type="radio" id="joao" name="tecnico" value="JOÃO BATISTA">
-      <label for="joao">JOÃO BATISTA</label><br>
-      <input type="radio" id="willames" name="tecnico" value="WILLAMES DUARTE">
-      <label for="willames">WILLAMES DUARTE</label><br>
-      <input type="radio" id="ivys" name="tecnico" value="IVYS SANTIAGO">
-      <label for="ivys">IVYS SANTIAGO</label><br>
-      <input type="radio" id="dario_moraes" name="tecnico" value="DÁRIO / MORAES">
+      <input type="checkbox" id="dario_moraes" name="tecnico" value="DÁRIO / MORAES">
       <label for="dario_moraes">DÁRIO / MORAES</label>
     </div>
   </div>
@@ -84,13 +73,27 @@
 
 <template id="template-atividade">
   <div class="atividade">
-    <label>Nº da Ordem/Nota:</label>
-    <input type="text" placeholder="Ex: 40803175">
-    <label>Descrição da Atividade:</label>
-    <textarea placeholder="Descrição detalhada da atividade"></textarea>
-    <label>Atividades Realizadas:</label>
-    <textarea placeholder="Liste as atividades realizadas"></textarea>
-    <button class="btn-remover" onclick="removerAtividade(this)">Remover</button>
+    <label>Nº DA ORDEM/NOTA:</label>
+    <input type="text" placeholder="Ex: 40803175" required>
+    
+    <label>TIPO DE INSTRUMENTO:</label>
+    <input type="text" placeholder="EX: TRANSMISSOR DE NÍVEL DO TANQUE 01." required>
+    
+    <label>DESCRIÇÃO DA ATIVIDADE:</label>
+    <textarea placeholder="DESCRIÇÃO DA ATIVIDADE." required></textarea>
+    
+    <label>ATIVIDADES REALIZADAS:</label>
+    <textarea placeholder="EX: REALIZADO LIMPEZA E CALIBRAÇÃO." required></textarea>
+    
+    <label>STATUS FINAL:</label>
+    <select>
+      <option>SELECIONE</option>
+      <option>CONCLUÍDO</option>
+      <option>NÃO CONCLUÍDO</option>
+      <option>EM ANDAMENTO</option>
+    </select>
+    
+    <button class="btn-remover" onclick="removerAtividade(this)">REMOVER</button>
   </div>
 </template>
 
@@ -103,26 +106,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const clone = template.content.cloneNode(true);
     atividadesDiv.appendChild(clone);
     setTimeout(()=>{ 
-      const input = clone.querySelector("input,textarea");
+      const input = clone.querySelector("input,textarea,select");
       if(input){input.scrollIntoView({behavior:'smooth',block:'center'}); input.focus();}
     },100);
   }
 
   function removerAtividade(btn){
-    btn.parentElement.remove();
+    if(confirm("TEM CERTEZA QUE DESEJA REMOVER ESTA ATIVIDADE?")){
+      btn.parentElement.remove();
+    }
   }
 
   function gerarPDF(){
     const dataAtual = new Date().toLocaleDateString();
-    const tecnicoSelecionado = document.querySelector('input[name="tecnico"]:checked')?.value || "NÃO SELECIONADO";
+    const tecnicosSelecionados = Array.from(document.querySelectorAll('input[name="tecnico"]:checked'))
+                                     .map(e=>e.value).join(", ") || "NÃO SELECIONADO";
 
     let relatorio = document.createElement("div");
 
-    // Cabeçalho PDF sólido
     relatorio.innerHTML = `
       <style>
         @page {margin:20mm;}
-        body {font-family:'Verdana', Arial, sans-serif;}
+        body {font-family:'Verdana', Arial, sans-serif; text-transform:uppercase;}
         .footer-page {position: fixed; bottom: 0; width: 100%; text-align: center; font-size:12px; color:#555;}
         .atividade-pdf {page-break-inside: avoid; border-radius:12px; padding:1rem; margin-bottom:1rem; box-shadow:0 2px 4px rgba(0,0,0,0.1);}
       </style>
@@ -134,81 +139,91 @@ document.addEventListener('DOMContentLoaded', () => {
           <h1 style='margin:0;font-size:1.6rem;'>📊 RELATÓRIO DE ATIVIDADES</h1>
           <p style='margin:0.2rem 0;'><b>EMPRESA:</b> GME - M. DIAS BRANCO</p>
           <p style='margin:0.2rem 0;'><b>DATA:</b> ${dataAtual}</p>
-          <p style='margin:0.2rem 0;'><b>TÉCNICO(OS) RESPONSÁVEL(EIS):</b> ${tecnicoSelecionado}</p>
+          <p style='margin:0.2rem 0;'><b>TÉCNICO(OS) RESPONSÁVEL(EIS):</b> ${tecnicosSelecionados}</p>
         </div>
         <img src='https://media-genial-analisa.genialinvestimentos.com.br/wp-content/uploads/2021/12/22171726/m-dias-branco-logo-azul.png' 
              alt='Logo M. Dias Branco' style='height:70px;display:block;'>
       </div>
-      <hr style='border:none;height:3px;background:#1f3b70;border-radius:2px;margin-bottom:1rem;'>
     `;
 
+    const fragment = document.createDocumentFragment();
     const atividades = document.querySelectorAll("#atividades .atividade");
     atividades.forEach((a,i)=>{
       const inputs = a.querySelectorAll("input[type='text']");
       const textareas = a.querySelectorAll("textarea");
-      if(inputs.length > 0 && textareas.length >= 2){
-        const ordem = inputs[0].value || "-";
-        let descricao = textareas[0].value || "-";
-        let realizadas = textareas[1].value || "-";
-        descricao = descricao.replace(/\n/g, '<br>');
-        realizadas = realizadas.replace(/\n/g, '<br>');
+      const select = a.querySelector("select");
+      if(inputs.length > 0 && textareas.length >= 2 && select){
+        const ordem = inputs[0].value.toUpperCase() || "-";
+        const instrumento = inputs[1].value.toUpperCase() || "-";
+        const descricao = textareas[0].value.toUpperCase() || "-";
+        const realizadas = textareas[1].value.toUpperCase() || "-";
+        const status = select.value.toUpperCase() || "-";
 
         const bgColor = (i % 2 === 0) ? "#1f3b70" : "#3b5998";
 
-        relatorio.innerHTML += `
-          <div class="atividade-pdf" style="background:${bgColor};color:#fff;">
-            <p style="margin-bottom:0.8rem;font-weight:bold;color:#fff;">📝 ATIVIDADE ${i+1}</p>
-            <p style="margin-bottom:0.8rem;"><b>ORDEM:</b> ${ordem}</p>
-            <p style="margin-bottom:0.8rem;"><b>DESCRIÇÃO:</b><br>${descricao}</p>
-            <p style="margin-bottom:0.8rem;"><b>ATIVIDADES REALIZADAS:</b><br>${realizadas}</p>
-          </div>`;
+        const div = document.createElement("div");
+        div.className = "atividade-pdf";
+        div.style.background = bgColor;
+        div.style.color = "#fff";
+        div.innerHTML = `
+          <p style="margin-bottom:0.8rem;font-weight:bold;color:#fff;">📝 ATIVIDADE ${i+1}</p>
+          <p><b>ORDEM:</b> ${ordem}</p>
+          <p><b>INSTRUMENTO:</b> ${instrumento}</p>
+          <p><b>DESCRIÇÃO:</b><br>${descricao}</p>
+          <p><b>ATIVIDADES REALIZADAS:</b><br>${realizadas}</p>
+          <p><b>STATUS FINAL:</b> ${status}</p>
+        `;
+        fragment.appendChild(div);
       }
     });
+    relatorio.appendChild(fragment);
+    relatorio.innerHTML += `<div class="footer-page">PÁGINA <span class="pageNumber"></span></div>`;
 
-    // Rodapé de página com numeração
-    relatorio.innerHTML += `<div class="footer-page">Página <span class="pageNumber"></span></div>`;
-
-    // Configurações do html2pdf
-    const opt = {
-      margin:       [10,10,20,10],
-      filename:     'relatorio_atividades_instrumentacao.pdf',
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['css', 'legacy'] }
-    };
-
-    html2pdf().set(opt).from(relatorio).toPdf().get('pdf').then(function(pdf){
+    html2pdf().set({
+      margin:[10,10,20,10],
+      filename:'RELATORIO_ATIVIDADES_INSTRUMENTACAO.pdf',
+      image:{ type:'jpeg', quality:0.98 },
+      html2canvas:{ scale:2 },
+      jsPDF:{ unit:'mm', format:'a4', orientation:'portrait' },
+      pagebreak:{ mode:['css','legacy'] }
+    }).from(relatorio).toPdf().get('pdf').then(pdf=>{
       const totalPages = pdf.internal.getNumberOfPages();
-      for(let i = 1; i <= totalPages; i++){
+      for(let i=1;i<=totalPages;i++){
         pdf.setPage(i);
         pdf.setFontSize(10);
         pdf.setTextColor(100);
-        pdf.text(`Página ${i} de ${totalPages}`, pdf.internal.pageSize.getWidth()/2, pdf.internal.pageSize.getHeight() - 10, {align:'center'});
+        pdf.text(`PÁGINA ${i} DE ${totalPages}`, pdf.internal.pageSize.getWidth()/2, pdf.internal.pageSize.getHeight()-10, {align:'center'});
       }
     }).save();
   }
 
   function compartilharWhatsApp(){
-    const tecnicoSelecionado = document.querySelector('input[name="tecnico"]:checked')?.value || "NÃO SELECIONADO";
+    const tecnicosSelecionados = Array.from(document.querySelectorAll('input[name="tecnico"]:checked')).map(e=>e.value).join(", ") || "NÃO SELECIONADO";
     const agora = new Date();
     const data = agora.toLocaleDateString();
     const hora = agora.toLocaleTimeString();
 
-    let texto = `📑 RELATÓRIO DE ATIVIDADES DE INSTRUMENTAÇÃO\n\n`;
-    texto += `📅 DATA: ${data}\n🕐 HORA: ${hora}\n👷 TÉCNICO RESPONSÁVEL: ${tecnicoSelecionado}\n\n`;
+    let atividades = document.querySelectorAll("#atividades .atividade");
+    let resumo = {TOTAL: atividades.length, CONCLUÍDO:0, "NÃO CONCLUÍDO":0, "EM ANDAMENTO":0};
+    let textoAtividades = "";
 
-    const atividades = document.querySelectorAll("#atividades .atividade");
     atividades.forEach((a,i)=>{
       const inputs = a.querySelectorAll("input[type='text']");
       const textareas = a.querySelectorAll("textarea");
-      if(inputs.length > 0 && textareas.length >= 2){
-        const ordem = inputs[0].value || "-";
-        const descricao = textareas[0].value || "-";
-        const realizadas = textareas[1].value || "-";
-        texto += `ORDEM ${i+1}\n📋 NÚMERO: ${ordem}\n📝 DESCRIÇÃO: ${descricao}\n⚙️ ATIVIDADES: ${realizadas}\n\n`;
+      const select = a.querySelector("select");
+      if(inputs.length > 0 && textareas.length >= 2 && select){
+        const ordem = inputs[0].value.toUpperCase() || "-";
+        const instrumento = inputs[1].value.toUpperCase() || "-";
+        const descricao = textareas[0].value.toUpperCase() || "-";
+        const realizadas = textareas[1].value.toUpperCase() || "-";
+        const status = select.value.toUpperCase() || "-";
+
+        if(resumo[status] !== undefined) resumo[status]++;
+        textoAtividades += `ATIVIDADE ${i+1}\nORDEM: ${ordem}\nINSTRUMENTO: ${instrumento}\nDESCRIÇÃO: ${descricao}\nATIVIDADES:\n ${realizadas}\nSTATUS FINAL: ${status}\n\n`;
       }
     });
+
+    let texto = `📑 RELATÓRIO DE ATIVIDADES DE INSTRUMENTAÇÃO\n\n📅 DATA: ${data}\n🕐 HORA: ${hora}\n👷 TÉCNICO RESPONSÁVEL: ${tecnicosSelecionados}\n\nRESUMO:\nTOTAL: ${resumo.TOTAL}\nCONCLUÍDO: ${resumo.CONCLUÍDO}\nNÃO CONCLUÍDO: ${resumo["NÃO CONCLUÍDO"]}\nEM ANDAMENTO: ${resumo["EM ANDAMENTO"]}\n\n${textoAtividades}`;
 
     const url = "https://wa.me/?text=" + encodeURIComponent(texto);
     window.open(url,"_blank");
