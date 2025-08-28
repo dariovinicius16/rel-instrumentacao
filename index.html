@@ -99,6 +99,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const atividadesDiv = document.getElementById("atividades");
 
+  // Carregar rascunho do localStorage
   if(localStorage.getItem("atividadesInstrumentacao")){
     atividadesDiv.innerHTML = localStorage.getItem("atividadesInstrumentacao");
   }
@@ -250,7 +251,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.open(url,"_blank");
   }
 
-  adicionarAtividade();
+  // Adiciona apenas uma atividade inicial
+  if(atividadesDiv.children.length === 0){
+    adicionarAtividade();
+  }
+
   document.getElementById('btn-pdf').addEventListener('click', gerarPDF);
 
   window.adicionarAtividade = adicionarAtividade;
