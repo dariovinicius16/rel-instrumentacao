@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Relatório de Atividades - Instrumentação Industrial</title>
+<title>Relatório de Atividades - Instrumentação </title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   * { box-sizing:border-box; margin:0; padding:0; font-family:'Verdana', Arial, sans-serif; }
@@ -64,7 +64,7 @@
 
 <template id="template-atividade">
   <div class="atividade">
-    <label>📝 Nº DA ORDEM/NOTA:</label>
+    <label>🔢 Nº DA ORDEM/NOTA:</label>
     <input type="text" placeholder="Ex: 40803175" required>
     
     <label>🔧 TIPO DE INSTRUMENTO:</label>
@@ -185,8 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
         div.style.background = bgColor;
         div.style.color = "#fff";
         div.innerHTML = `
-          <p style="margin-bottom:0.8rem;font-weight:bold;color:#fff;">📝 ATIVIDADE ${i+1}</p>
-          <p>📝 ORDEM: ${ordem}</p>
+          <p style="margin-bottom:0.8rem;font-weight:bold;color:#fff;">📊 ATIVIDADE ${i+1}</p>
+          <p>🔢 ORDEM: ${ordem}</p>
           <p>🔧 INSTRUMENTO: ${instrumento}</p>
           <p>📝 DESCRIÇÃO:<br>${descricao}</p>
           <p>⚙️ ATIVIDADES REALIZADAS:<br>${realizadas}</p>
