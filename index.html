@@ -20,7 +20,8 @@
   .atividade input, .atividade textarea, .atividade select { text-transform:uppercase; width:100%; padding:0.8rem; margin-bottom:0.8rem; border:1px solid #ccc; border-radius:8px; font-size:1.1rem; background:#fafafa; }
   .atividade textarea { min-height:100px; resize:vertical; }
 
-  .btn-remover, .btn-duplicar, .btn-concluir { background:#1f3b70; color:#fff; border:none; padding:0.6rem; border-radius:8px; cursor:pointer; width:48%; margin-right:2%; margin-top:0.5rem; }
+  .btn-group { display:flex; gap:4%; }
+  .btn-remover, .btn-duplicar, .btn-concluir { background:#1f3b70; color:#fff; border:none; padding:0.6rem; border-radius:8px; cursor:pointer; width:48%; margin-top:0.5rem; }
   .btn-remover:hover, .btn-duplicar:hover, .btn-concluir:hover { background:#12274b; }
 
   .btn-fab { position:fixed; bottom:80px; right:20px; background:#f1c40f; color:#fff; border:none; border-radius:50%; width:60px; height:60px; font-size:2rem; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:200; }
@@ -67,19 +68,19 @@
 
 <template id="template-atividade">
   <div class="atividade">
-    <label>Nº DA ORDEM/NOTA:</label>
+    <label>📝 Nº DA ORDEM/NOTA:</label>
     <input type="text" placeholder="Ex: 40803175" required>
     
-    <label>TIPO DE INSTRUMENTO:</label>
+    <label>🔧 TIPO DE INSTRUMENTO:</label>
     <input type="text" placeholder="Ex: Transmissor de pressão" required>
     
-    <label>DESCRIÇÃO DA ATIVIDADE:</label>
+    <label>📝 DESCRIÇÃO DA ATIVIDADE:</label>
     <textarea placeholder="Descrição detalhada da atividade" required></textarea>
     
-    <label>ATIVIDADES REALIZADAS:</label>
+    <label>⚙️ ATIVIDADES REALIZADAS:</label>
     <textarea placeholder="Liste as atividades realizadas" required></textarea>
     
-    <label>STATUS FINAL:</label>
+    <label>📍 STATUS FINAL:</label>
     <select>
       <option>SELECIONE</option>
       <option>CONCLUÍDO</option>
@@ -87,8 +88,10 @@
       <option>EM ANDAMENTO</option>
     </select>
 
-    <button class="btn-remover" onclick="removerAtividade(this)">REMOVER</button>
-    <button class="btn-duplicar" onclick="duplicarAtividade(this)">DUPLICAR</button>
+    <div class="btn-group">
+      <button class="btn-remover" onclick="removerAtividade(this)">REMOVER</button>
+      <button class="btn-duplicar" onclick="duplicarAtividade(this)">DUPLICAR</button>
+    </div>
   </div>
 </template>
 
@@ -96,7 +99,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const atividadesDiv = document.getElementById("atividades");
 
-  // Carregar rascunho do localStorage
   if(localStorage.getItem("atividadesInstrumentacao")){
     atividadesDiv.innerHTML = localStorage.getItem("atividadesInstrumentacao");
   }
@@ -118,13 +120,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function removerAtividade(btn){
     if(confirm("TEM CERTEZA QUE DESEJA REMOVER ESTA ATIVIDADE?")){
-      btn.parentElement.remove();
+      btn.parentElement.parentElement.remove();
       salvarRascunho();
     }
   }
 
   function duplicarAtividade(btn){
-    const atividade = btn.parentElement;
+    const atividade = btn.parentElement.parentElement;
     const clone = atividade.cloneNode(true);
     atividadesDiv.appendChild(clone);
     salvarRascunho();
@@ -186,11 +188,11 @@ document.addEventListener('DOMContentLoaded', () => {
         div.style.color = "#fff";
         div.innerHTML = `
           <p style="margin-bottom:0.8rem;font-weight:bold;color:#fff;">📝 ATIVIDADE ${i+1}</p>
-          <p><b>ORDEM:</b> ${ordem}</p>
-          <p><b>INSTRUMENTO:</b> ${instrumento}</p>
-          <p><b>DESCRIÇÃO:</b><br>${descricao}</p>
-          <p><b>ATIVIDADES REALIZADAS:</b><br>${realizadas}</p>
-          <p><b>STATUS FINAL:</b> ${status}</p>
+          <p>📝 ORDEM: ${ordem}</p>
+          <p>🔧 INSTRUMENTO: ${instrumento}</p>
+          <p>📝 DESCRIÇÃO:<br>${descricao}</p>
+          <p>⚙️ ATIVIDADES REALIZADAS:<br>${realizadas}</p>
+          <p>📍 STATUS FINAL: ${status}</p>
         `;
         fragment.appendChild(div);
       }
@@ -238,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const status = select.value.toUpperCase() || "-";
 
         if(resumo[status] !== undefined) resumo[status]++;
-        textoAtividades += `ATIVIDADE ${i+1}\nORDEM: ${ordem}\nINSTRUMENTO: ${instrumento}\nDESCRIÇÃO: ${descricao}\nATIVIDADES: ${realizadas}\nSTATUS FINAL: ${status}\n\n`;
+        textoAtividades += `📝 ATIVIDADE ${i+1}\n📝 ORDEM: ${ordem}\n🔧 INSTRUMENTO: ${instrumento}\n📝 DESCRIÇÃO: ${descricao}\n⚙️ ATIVIDADES: ${realizadas}\n📍 STATUS FINAL: ${status}\n\n`;
       }
     });
 
@@ -257,7 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.duplicarAtividade = duplicarAtividade;
   window.marcarTodasConcluidas = marcarTodasConcluidas;
 
-  // Atualizar rascunho quando campos são alterados
   atividadesDiv.addEventListener('input', salvarRascunho);
 });
 </script>
