@@ -9,7 +9,7 @@
   * { box-sizing:border-box; margin:0; padding:0; font-family:'Verdana', Arial, sans-serif; }
   html,body { height:100%; -webkit-overflow-scrolling:touch; }
   body { background:#f2f4f7; color:#333; display:flex; flex-direction:column; min-height:100vh; }
-  
+
   header { background:#1f3b70; color:#fff; padding:1.2rem; display:flex; align-items:center; justify-content:space-between; font-size:1.5rem; position:sticky; top:0; z-index:100; }
   header img { height:50px; background:#fff; padding:5px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
 
@@ -99,11 +99,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const atividadesDiv = document.getElementById("atividades");
 
-  // Carregar rascunho do localStorage
-  if(localStorage.getItem("atividadesInstrumentacao")){
-    atividadesDiv.innerHTML = localStorage.getItem("atividadesInstrumentacao");
-  }
-
   function salvarRascunho(){
     localStorage.setItem("atividadesInstrumentacao", atividadesDiv.innerHTML);
   }
@@ -138,6 +133,13 @@ document.addEventListener('DOMContentLoaded', () => {
     selects.forEach(s=>s.value = "CONCLUÍDO");
     salvarRascunho();
     alert("TODAS AS ATIVIDADES FORAM MARCADAS COMO CONCLUÍDAS!");
+  }
+
+  // Inicialização: apenas UMA atividade inicial
+  if(!localStorage.getItem("atividadesInstrumentacao")) {
+    adicionarAtividade(); 
+  } else {
+    atividadesDiv.innerHTML = localStorage.getItem("atividadesInstrumentacao");
   }
 
   function gerarPDF(){
@@ -249,11 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const url = "https://wa.me/?text=" + encodeURIComponent(texto);
     window.open(url,"_blank");
-  }
-
-  // Adiciona apenas uma atividade inicial
-  if(atividadesDiv.children.length === 0){
-    adicionarAtividade();
   }
 
   document.getElementById('btn-pdf').addEventListener('click', gerarPDF);
