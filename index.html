@@ -99,6 +99,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   const atividadesDiv = document.getElementById("atividades");
 
+  // Limpar rascunho antigo para evitar loop no WhatsApp
+  localStorage.removeItem("atividadesInstrumentacao");
+
   function salvarRascunho(){
     localStorage.setItem("atividadesInstrumentacao", atividadesDiv.innerHTML);
   }
@@ -136,11 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Inicialização: apenas UMA atividade inicial
-  if(!localStorage.getItem("atividadesInstrumentacao")) {
-    adicionarAtividade(); 
-  } else {
-    atividadesDiv.innerHTML = localStorage.getItem("atividadesInstrumentacao");
-  }
+  adicionarAtividade();
 
   function gerarPDF(){
     const dataAtual = new Date().toLocaleDateString();
