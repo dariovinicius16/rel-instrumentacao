@@ -20,6 +20,8 @@
   .atividade input, .atividade textarea, .atividade select { text-transform:uppercase; width:100%; padding:0.8rem; margin-bottom:0.8rem; border:1px solid #ccc; border-radius:8px; font-size:1.1rem; background:#fafafa; }
   .atividade textarea { min-height:100px; resize:vertical; }
 
+  .outro-instrumento { display:none; }
+
   .btn-group { display:flex; gap:4%; }
   .btn-remover, .btn-duplicar, .btn-concluir { background:#1f3b70; color:#fff; border:none; padding:0.6rem; border-radius:8px; cursor:pointer; width:48%; margin-top:0.5rem; }
   .btn-remover:hover, .btn-duplicar:hover, .btn-concluir:hover { background:#12274b; }
@@ -46,11 +48,10 @@
 <div class="container">
   <div class="atividade" id="tecnico-responsavel">
     <label><b>TÉCNICO INSTRUMENTISTA RESPONSÁVEL:</b></label>
-    <div>
-      <input type="checkbox" id="dario_moraes" name="tecnico" value="DÁRIO / MORAES">
-      <label for="dario_moraes">DÁRIO / MORAES</label>
-    </div>
-    <button class="btn-concluir" onclick="marcarTodasConcluidas()">MARCAR TODAS COMO CONCLUÍDAS</button>
+    <select id="select-tecnico" required>
+      <option value="">SELECIONE O TÉCNICO</option>
+      <option>DÁRIO | MORAES</option>
+    </select>
   </div>
 
   <div id="atividades"></div>
@@ -68,7 +69,7 @@
     <input type="text" placeholder="Ex: 40803175" required>
     
     <label>🔧 TIPO DE INSTRUMENTO:</label>
-    <select required>
+    <select class="tipo-instrumento" required>
       <option value="">SELECIONE</option>
       <option>TRANSMISSOR DE TEMPERATURA</option>
       <option>TRANSMISSOR DE PRESSÃO</option>
@@ -83,8 +84,10 @@
       <option>ELETRODO PHMETRO</option>
       <option>CONDUTIVÍMETRO</option>
       <option>CHAVE DE NÍVEL</option>
-      <option>OUTRO</option>
+      <option value="OUTRO">OUTRO</option>
     </select>
+
+    <input type="text" class="outro-instrumento" placeholder="Digite o instrumento" />
     
     <label>📝 DESCRIÇÃO DA ATIVIDADE:</label>
     <textarea placeholder="Descrição detalhada da atividade" required></textarea>
@@ -110,6 +113,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const atividadesDiv = document.getElementById("atividades");
+  const selectTecnico = document.getElementById("select-tecnico");
 
   localStorage.removeItem("atividadesInstrumentacao");
 
@@ -117,13 +121,34 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem("atividadesInstrumentacao", atividadesDiv.innerHTML);
   }
 
+  function configurarOutroInstrumento(atividade) {
+    const select = atividade.querySelector(".tipo-instrumento");
+    const outroInput = atividade.querySelector(".outro-instrumento");
+
+    select.addEventListener("change", () => {
+      if (select.value === "OUTRO") {
+        outroInput.style.display = "block";
+        outroInput.required = true;
+      } else {
+        outroInput.style.display = "none";
+        outroInput.required = false;
+        outroInput.value = "";
+      }
+      salvarRascunho();
+    });
+  }
+
   function adicionarAtividade(){
     const template = document.getElementById("template-atividade");
     const clone = template.content.cloneNode(true);
     atividadesDiv.appendChild(clone);
+
+    const novaAtividade = atividadesDiv.lastElementChild;
+    configurarOutroInstrumento(novaAtividade);
+
     salvarRascunho();
     setTimeout(()=>{ 
-      const input = clone.querySelector("input,textarea,select");
+      const input = novaAtividade.querySelector("input,textarea,select");
       if(input){input.scrollIntoView({behavior:'smooth',block:'center'}); input.focus();}
     },100);
   }
@@ -139,6 +164,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const atividade = btn.parentElement.parentElement;
     const clone = atividade.cloneNode(true);
     atividadesDiv.appendChild(clone);
+
+    const novaAtividade = atividadesDiv.lastElementChild;
+    configurarOutroInstrumento(novaAtividade);
+
     salvarRascunho();
   }
 
@@ -151,10 +180,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
   adicionarAtividade();
 
+  function obterInstrumento(atividade){
+    const select = atividade.querySelector(".tipo-instrumento");
+    const outro = atividade.querySelector(".outro-instrumento");
+    return (select.value === "OUTRO" ? outro.value : select.value) || "-";
+  }
+
+  function validarAntesGerar(){
+    if(!selectTecnico.value){
+      alert("SELECIONE O TÉCNICO INSTRUMENTISTA!");
+      return false;
+    }
+
+    const atividades = document.querySelectorAll("#atividades .atividade");
+    for(let a of atividades){
+      const select = a.querySelector(".tipo-instrumento");
+      const outro = a.querySelector(".outro-instrumento");
+      if(select.value === "OUTRO" && !outro.value.trim()){
+        alert("POR FAVOR, PREENCHA O CAMPO DE OUTRO INSTRUMENTO!");
+        outro.focus();
+        return false;
+      }
+    }
+    return true;
+  }
+
   function gerarPDF(){
+    if(!validarAntesGerar()) return;
+
     const dataAtual = new Date().toLocaleDateString();
-    const tecnicosSelecionados = Array.from(document.querySelectorAll('input[name="tecnico"]:checked'))
-                                     .map(e=>e.value).join(", ") || "NÃO SELECIONADO";
+    const tecnicosSelecionados = selectTecnico.value.toUpperCase();
 
     let relatorio = document.createElement("div");
     relatorio.innerHTML = `
@@ -183,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const atividades = document.querySelectorAll("#atividades .atividade");
     atividades.forEach((a,i)=>{
       const ordem = a.querySelector("input[type='text']").value.toUpperCase() || "-";
-      const instrumento = a.querySelector("select").value.toUpperCase() || "-";
+      const instrumento = obterInstrumento(a).toUpperCase();
       const descricao = a.querySelectorAll("textarea")[0].value.toUpperCase() || "-";
       const realizadas = a.querySelectorAll("textarea")[1].value.toUpperCase() || "-";
       const status = a.querySelectorAll("select")[1].value.toUpperCase() || "-";
@@ -198,8 +253,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <p style="margin-bottom:0.8rem;font-weight:bold;color:#fff;">📊 ATIVIDADE ${i+1}</p>
         <p>📈 ORDEM: ${ordem}</p>
         <p>🔧 INSTRUMENTO: ${instrumento}</p>
-        <p>📝 DESCRIÇÃO:<br>${descricao}</p>
-        <p>⚙️ ATIVIDADES REALIZADAS:<br>${realizadas}</p>
+        <p>📝 DESCRIÇÃO: ${descricao}</p>
+        <p>⚙️ ATIVIDADES REALIZADAS: <br>${realizadas}</p>
         <p>📍 STATUS FINAL: ${status}</p>
       `;
       fragment.appendChild(div);
@@ -226,7 +281,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function compartilharWhatsApp(){
-    const tecnicosSelecionados = Array.from(document.querySelectorAll('input[name="tecnico"]:checked')).map(e=>e.value).join(", ") || "NÃO SELECIONADO";
+    if(!validarAntesGerar()) return;
+
+    const tecnicosSelecionados = selectTecnico.value.toUpperCase();
     const agora = new Date();
     const data = agora.toLocaleDateString();
     const hora = agora.toLocaleTimeString();
@@ -237,13 +294,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     atividades.forEach((a,i)=>{
       const ordem = a.querySelector("input[type='text']").value.toUpperCase() || "-";
-      const instrumento = a.querySelector("select").value.toUpperCase() || "-";
+      const instrumento = obterInstrumento(a).toUpperCase();
       const descricao = a.querySelectorAll("textarea")[0].value.toUpperCase() || "-";
       const realizadas = a.querySelectorAll("textarea")[1].value.toUpperCase() || "-";
       const status = a.querySelectorAll("select")[1].value.toUpperCase() || "-";
 
       if(resumo[status] !== undefined) resumo[status]++;
-      textoAtividades += `📝 ATIVIDADE ${i+1}\n📝 ORDEM: ${ordem}\n🔧 INSTRUMENTO: ${instrumento}\n📝 DESCRIÇÃO: ${descricao}\n⚙️ ATIVIDADES: ${realizadas}\n📍 STATUS FINAL: ${status}\n\n`;
+      textoAtividades += `📑 ATIVIDADE ${i+1}\n📈 ORDEM: ${ordem}\n🔧 INSTRUMENTO: ${instrumento}\n📝 DESCRIÇÃO: ${descricao}\n⚙️ ATIVIDADES: ${realizadas}\n📍 STATUS FINAL: ${status}\n\n`;
     });
 
     let texto = `📑 RELATÓRIO DE ATIVIDADES DE INSTRUMENTAÇÃO\n\n📅 DATA: ${data}\n🕐 HORA: ${hora}\n👷 TÉCNICO(OS) RESPONSÁVEL(EIS): ${tecnicosSelecionados}\n\nRESUMO:\nTOTAL: ${resumo.TOTAL}\nCONCLUÍDO: ${resumo.CONCLUÍDO}\nNÃO CONCLUÍDO: ${resumo["NÃO CONCLUÍDO"]}\nEM ANDAMENTO: ${resumo["EM ANDAMENTO"]}\n\n${textoAtividades}`;
