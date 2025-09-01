@@ -62,7 +62,7 @@
   .btn-fab:hover { transform:scale(1.1); }
 
   .btn-whatsapp {
-    position:fixed; bottom:20px; left:20px; background:#25D366;
+    position:fixed; bottom:90px; left:20px; background:#25D366;
     color:#fff; border:none; border-radius:50%; width:65px; height:65px; font-size:2rem; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
     box-shadow:0 8px 25px rgba(0,0,0,0.25); transition: all 0.3s; z-index:200;
@@ -183,8 +183,20 @@ document.addEventListener('DOMContentLoaded', () => {
     },100);
   }
 
-  function removerAtividade(btn){ if(confirm("TEM CERTEZA QUE DESEJA REMOVER ESTA ATIVIDADE?")){ btn.parentElement.parentElement.remove(); salvarRascunho(); } }
-  function duplicarAtividade(btn){ const atividade=btn.parentElement.parentElement; const clone=atividade.cloneNode(true); atividadesDiv.appendChild(clone); configurarOutroInstrumento(atividadesDiv.lastElementChild); salvarRascunho(); }
+  function removerAtividade(btn){ 
+    if(confirm("TEM CERTEZA QUE DESEJA REMOVER ESTA ATIVIDADE?")){
+      btn.parentElement.parentElement.remove(); 
+      salvarRascunho(); 
+    } 
+  }
+
+  function duplicarAtividade(btn){ 
+    const atividade=btn.parentElement.parentElement; 
+    const clone=atividade.cloneNode(true); 
+    atividadesDiv.appendChild(clone); 
+    configurarOutroInstrumento(atividadesDiv.lastElementChild); 
+    salvarRascunho(); 
+  }
 
   function compartilharWhatsApp(){
     const tecnico = document.getElementById("select-tecnico").value || "-";
