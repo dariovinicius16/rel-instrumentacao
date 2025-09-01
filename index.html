@@ -3,40 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Relatório de Atividades - Instrumentação </title>
+<title>Relatório de Atividades - Instrumentação</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
-  * { box-sizing:border-box; margin:0; padding:0; font-family:'Verdana', Arial, sans-serif; }
-  html,body { height:100%; -webkit-overflow-scrolling:touch; }
-  body { background:#f2f4f7; color:#333; display:flex; flex-direction:column; min-height:100vh; }
+  * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; scroll-behavior:smooth; }
+  html, body { height:100%; background:#f4f5f7; }
 
-  header { background:#1f3b70; color:#fff; padding:1.2rem; display:flex; align-items:center; justify-content:space-between; font-size:1.5rem; position:sticky; top:0; z-index:100; }
-  header img { height:50px; background:#fff; padding:5px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
+  header {
+    background:linear-gradient(135deg,#6a11cb,#2575fc);
+    color:#fff; padding:1rem 2rem; display:flex; align-items:center; justify-content:space-between;
+    font-size:1.5rem; position:sticky; top:0; z-index:100; box-shadow:0 4px 15px rgba(0,0,0,0.25);
+    border-bottom-left-radius:16px; border-bottom-right-radius:16px;
+  }
+  header img { height:50px; border-radius:12px; background:#fff; padding:4px; }
 
-  .container { flex:1; overflow-y:auto; padding:1rem; -webkit-overflow-scrolling:touch; }
+  .container {
+    flex:1; overflow-y:auto; padding:2rem; display:flex; flex-direction:column; gap:2rem;
+  }
 
-  .atividade { background:#fff; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1); padding:1rem; margin-bottom:1rem; }
-  .atividade label { font-weight:bold; margin-bottom:0.3rem; display:block; text-transform:uppercase; }
-  .atividade input, .atividade textarea, .atividade select { text-transform:uppercase; width:100%; padding:0.8rem; margin-bottom:0.8rem; border:1px solid #ccc; border-radius:8px; font-size:1.1rem; background:#fafafa; }
+  .atividade {
+    background:#fff;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    padding:2rem;
+    transition: transform 0.3s, box-shadow 0.3s, filter 0.3s;
+    opacity:0; transform:translateY(20px); animation:fadeIn 0.5s forwards;
+  }
+
+  @keyframes fadeIn { to { opacity:1; transform:translateY(0); } }
+
+  .atividade:hover { transform: translateY(-5px); box-shadow:0 20px 40px rgba(0,0,0,0.15); filter:brightness(1.03); }
+
+  .atividade label { font-weight:600; margin-bottom:0.5rem; display:block; text-transform:uppercase; color:#4b3f72; }
+
+  .atividade input, .atividade textarea, .atividade select {
+    width:100%; padding:1rem; margin-bottom:1rem; border-radius:16px; border:1px solid #d1d5db;
+    background:#f9fafc; font-size:1rem; transition: all 0.3s; text-transform:uppercase; outline:none;
+  }
+  .atividade input:focus, .atividade textarea:focus, .atividade select:focus {
+    border:2px solid #6a11cb; box-shadow:0 0 12px rgba(106,17,203,0.2); background:#fff;
+  }
   .atividade textarea { min-height:100px; resize:vertical; }
 
   .outro-instrumento { display:none; }
 
-  .btn-group { display:flex; gap:4%; }
-  .btn-remover, .btn-duplicar, .btn-concluir { background:#1f3b70; color:#fff; border:none; padding:0.6rem; border-radius:8px; cursor:pointer; width:48%; margin-top:0.5rem; }
-  .btn-remover:hover, .btn-duplicar:hover, .btn-concluir:hover { background:#12274b; }
+  .btn-group { display:flex; gap:12px; flex-wrap:wrap; margin-top:0.5rem; }
+  .btn-remover, .btn-duplicar, .btn-concluir {
+    flex:1; padding:1rem; border:none; border-radius:16px; cursor:pointer; font-weight:600; transition: all 0.3s;
+    color:#fff; background:linear-gradient(135deg,#6a11cb,#2575fc); box-shadow:0 6px 15px rgba(0,0,0,0.15);
+  }
+  .btn-remover:hover, .btn-duplicar:hover, .btn-concluir:hover { transform:translateY(-3px); filter:brightness(1.1); }
 
-  .btn-fab { position:fixed; bottom:80px; right:20px; background:#f1c40f; color:#fff; border:none; border-radius:50%; width:60px; height:60px; font-size:2rem; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:200; }
-  .btn-fab:hover { background:#d4ac0d; }
+  .btn-fab {
+    position:fixed; bottom:90px; right:20px; background:linear-gradient(135deg,#f7971e,#ffd200);
+    color:#fff; border:none; border-radius:50%; width:65px; height:65px; font-size:2rem; cursor:pointer;
+    box-shadow:0 8px 25px rgba(0,0,0,0.25); transition: all 0.3s; z-index:200;
+  }
+  .btn-fab:hover { transform:scale(1.1); }
 
-  footer { background:#fff; padding:0.8rem; display:flex; justify-content:space-around; border-top:1px solid #ddd; position:sticky; bottom:0; }
-  footer button { flex:1; margin:0 0.3rem; padding:0.8rem; font-size:1rem; border:none; border-radius:10px; cursor:pointer; color:#fff; }
-  .btn-pdf { background:#1f3b70; }
-  .btn-pdf:hover { background:#12274b; }
-  .btn-share { background:#f1c40f; color:#fff; }
-  .btn-share:hover { background:#d4ac0d; }
+  footer {
+    background:#fff; padding:1rem 1.5rem; display:flex; justify-content:space-between;
+    border-top:1px solid #ddd; position:sticky; bottom:0; gap:1rem;
+  }
+  footer button {
+    flex:1; padding:1rem; font-size:1rem; border:none; border-radius:16px; cursor:pointer; font-weight:600; color:#fff;
+    transition:all 0.3s; box-shadow:0 6px 15px rgba(0,0,0,0.15);
+  }
+  .btn-pdf { background:linear-gradient(135deg,#6a11cb,#2575fc); }
+  .btn-pdf:hover { transform:translateY(-3px); filter:brightness(1.1); }
+  .btn-share { background:linear-gradient(135deg,#f7971e,#ffd200); color:#333; }
+  .btn-share:hover { transform:translateY(-3px); filter:brightness(1.05); }
 
-  @media (max-width:600px){ header{font-size:1.2rem;} .atividade input, .atividade textarea, .atividade select{font-size:1rem;} footer button{font-size:0.9rem; padding:0.7rem;} }
+  @media (max-width:600px){
+    header{font-size:1.2rem; padding:1rem;}
+    .atividade input, .atividade textarea, .atividade select{font-size:0.95rem;}
+    footer button{font-size:0.9rem; padding:0.8rem;}
+  }
 </style>
 </head>
 <body>
@@ -50,10 +92,10 @@
     <label><b>TÉCNICO INSTRUMENTISTA RESPONSÁVEL:</b></label>
     <select id="select-tecnico" required>
       <option value="">SELECIONE O TÉCNICO</option>
-      <option>DÁRIO | MORAES</option>
+      <option>DÁRIO / MORAES</option>
+      <option>OUTRO</option>
     </select>
   </div>
-
   <div id="atividades"></div>
 </div>
 
@@ -86,9 +128,8 @@
       <option>CHAVE DE NÍVEL</option>
       <option value="OUTRO">OUTRO</option>
     </select>
-
     <input type="text" class="outro-instrumento" placeholder="Digite o instrumento" />
-    
+
     <label>📝 DESCRIÇÃO DA ATIVIDADE:</label>
     <textarea placeholder="Descrição detalhada da atividade" required></textarea>
     
@@ -115,25 +156,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const atividadesDiv = document.getElementById("atividades");
   const selectTecnico = document.getElementById("select-tecnico");
 
-  localStorage.removeItem("atividadesInstrumentacao");
+  function salvarRascunho(){ localStorage.setItem("atividadesInstrumentacao", atividadesDiv.innerHTML); }
 
-  function salvarRascunho(){
-    localStorage.setItem("atividadesInstrumentacao", atividadesDiv.innerHTML);
-  }
-
-  function configurarOutroInstrumento(atividade) {
+  function configurarOutroInstrumento(atividade){
     const select = atividade.querySelector(".tipo-instrumento");
     const outroInput = atividade.querySelector(".outro-instrumento");
-
     select.addEventListener("change", () => {
-      if (select.value === "OUTRO") {
-        outroInput.style.display = "block";
-        outroInput.required = true;
-      } else {
-        outroInput.style.display = "none";
-        outroInput.required = false;
-        outroInput.value = "";
-      }
+      if(select.value==="OUTRO"){ outroInput.style.display="block"; outroInput.required=true; }
+      else{ outroInput.style.display="none"; outroInput.required=false; outroInput.value=""; }
       salvarRascunho();
     });
   }
@@ -142,10 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const template = document.getElementById("template-atividade");
     const clone = template.content.cloneNode(true);
     atividadesDiv.appendChild(clone);
-
     const novaAtividade = atividadesDiv.lastElementChild;
     configurarOutroInstrumento(novaAtividade);
-
     salvarRascunho();
     setTimeout(()=>{ 
       const input = novaAtividade.querySelector("input,textarea,select");
@@ -153,171 +181,14 @@ document.addEventListener('DOMContentLoaded', () => {
     },100);
   }
 
-  function removerAtividade(btn){
-    if(confirm("TEM CERTEZA QUE DESEJA REMOVER ESTA ATIVIDADE?")){
-      btn.parentElement.parentElement.remove();
-      salvarRascunho();
-    }
-  }
-
-  function duplicarAtividade(btn){
-    const atividade = btn.parentElement.parentElement;
-    const clone = atividade.cloneNode(true);
-    atividadesDiv.appendChild(clone);
-
-    const novaAtividade = atividadesDiv.lastElementChild;
-    configurarOutroInstrumento(novaAtividade);
-
-    salvarRascunho();
-  }
-
-  function marcarTodasConcluidas(){
-    const selects = document.querySelectorAll("#atividades .atividade select:last-of-type");
-    selects.forEach(s=>s.value = "CONCLUÍDO");
-    salvarRascunho();
-    alert("TODAS AS ATIVIDADES FORAM MARCADAS COMO CONCLUÍDAS!");
-  }
+  function removerAtividade(btn){ if(confirm("TEM CERTEZA QUE DESEJA REMOVER ESTA ATIVIDADE?")){ btn.parentElement.parentElement.remove(); salvarRascunho(); } }
+  function duplicarAtividade(btn){ const atividade=btn.parentElement.parentElement; const clone=atividade.cloneNode(true); atividadesDiv.appendChild(clone); configurarOutroInstrumento(atividadesDiv.lastElementChild); salvarRascunho(); }
 
   adicionarAtividade();
 
-  function obterInstrumento(atividade){
-    const select = atividade.querySelector(".tipo-instrumento");
-    const outro = atividade.querySelector(".outro-instrumento");
-    return (select.value === "OUTRO" ? outro.value : select.value) || "-";
-  }
-
-  function validarAntesGerar(){
-    if(!selectTecnico.value){
-      alert("SELECIONE O TÉCNICO INSTRUMENTISTA!");
-      return false;
-    }
-
-    const atividades = document.querySelectorAll("#atividades .atividade");
-    for(let a of atividades){
-      const select = a.querySelector(".tipo-instrumento");
-      const outro = a.querySelector(".outro-instrumento");
-      if(select.value === "OUTRO" && !outro.value.trim()){
-        alert("POR FAVOR, PREENCHA O CAMPO DE OUTRO INSTRUMENTO!");
-        outro.focus();
-        return false;
-      }
-    }
-    return true;
-  }
-
-  function gerarPDF(){
-    if(!validarAntesGerar()) return;
-
-    const dataAtual = new Date().toLocaleDateString();
-    const tecnicosSelecionados = selectTecnico.value.toUpperCase();
-
-    let relatorio = document.createElement("div");
-    relatorio.innerHTML = `
-      <style>
-        @page {margin:20mm;}
-        body {font-family:'Verdana', Arial, sans-serif; text-transform:uppercase;}
-        .footer-page {position: fixed; bottom: 0; width: 100%; text-align: center; font-size:12px; color:#555;}
-        .atividade-pdf {page-break-inside: avoid; border-radius:12px; padding:1rem; margin-bottom:1rem; box-shadow:0 2px 4px rgba(0,0,0,0.1);}
-      </style>
-      <div style="
-          display:flex;justify-content:space-between;align-items:center;
-          background:#1f3b70;color:#fff;padding:1rem 1.5rem;border-radius:12px;
-          box-shadow:0 4px 12px rgba(0,0,0,0.2);margin-bottom:1.5rem;">
-        <div style="line-height:1.4;">
-          <h1 style='margin:0;font-size:1.6rem;'>📊 RELATÓRIO DE ATIVIDADES</h1>
-          <p style='margin:0.2rem 0;'><b>EMPRESA:</b> GME - M. DIAS BRANCO</p>
-          <p style='margin:0.2rem 0;'><b>DATA:</b> ${dataAtual}</p>
-          <p style='margin:0.2rem 0;'><b>TÉCNICO(OS) RESPONSÁVEL(EIS):</b> ${tecnicosSelecionados}</p>
-        </div>
-        <img src='https://media-genial-analisa.genialinvestimentos.com.br/wp-content/uploads/2021/12/22171726/m-dias-branco-logo-azul.png' 
-             alt='Logo M. Dias Branco' style='height:70px;display:block;'>
-      </div>
-    `;
-
-    const fragment = document.createDocumentFragment();
-    const atividades = document.querySelectorAll("#atividades .atividade");
-    atividades.forEach((a,i)=>{
-      const ordem = a.querySelector("input[type='text']").value.toUpperCase() || "-";
-      const instrumento = obterInstrumento(a).toUpperCase();
-      const descricao = a.querySelectorAll("textarea")[0].value.toUpperCase() || "-";
-      const realizadas = a.querySelectorAll("textarea")[1].value.toUpperCase() || "-";
-      const status = a.querySelectorAll("select")[1].value.toUpperCase() || "-";
-
-      const bgColor = (i % 2 === 0) ? "#1f3b70" : "#3b5998";
-
-      const div = document.createElement("div");
-      div.className = "atividade-pdf";
-      div.style.background = bgColor;
-      div.style.color = "#fff";
-      div.innerHTML = `
-        <p style="margin-bottom:0.8rem;font-weight:bold;color:#fff;">📊 ATIVIDADE ${i+1}</p>
-        <p>📈 ORDEM: ${ordem}</p>
-        <p>🔧 INSTRUMENTO: ${instrumento}</p>
-        <p>📝 DESCRIÇÃO: ${descricao}</p>
-        <p>⚙️ ATIVIDADES REALIZADAS: <br>${realizadas}</p>
-        <p>📍 STATUS FINAL: ${status}</p>
-      `;
-      fragment.appendChild(div);
-    });
-    relatorio.appendChild(fragment);
-    relatorio.innerHTML += `<div class="footer-page">PÁGINA <span class="pageNumber"></span></div>`;
-
-    html2pdf().set({
-      margin:[10,10,20,10],
-      filename:'RELATORIO_ATIVIDADES_INSTRUMENTACAO.pdf',
-      image:{ type:'jpeg', quality:0.98 },
-      html2canvas:{ scale:2 },
-      jsPDF:{ unit:'mm', format:'a4', orientation:'portrait' },
-      pagebreak:{ mode:['css','legacy'] }
-    }).from(relatorio).toPdf().get('pdf').then(pdf=>{
-      const totalPages = pdf.internal.getNumberOfPages();
-      for(let i=1;i<=totalPages;i++){
-        pdf.setPage(i);
-        pdf.setFontSize(10);
-        pdf.setTextColor(100);
-        pdf.text(`PÁGINA ${i} DE ${totalPages}`, pdf.internal.pageSize.getWidth()/2, pdf.internal.pageSize.getHeight()-10, {align:'center'});
-      }
-    }).save();
-  }
-
-  function compartilharWhatsApp(){
-    if(!validarAntesGerar()) return;
-
-    const tecnicosSelecionados = selectTecnico.value.toUpperCase();
-    const agora = new Date();
-    const data = agora.toLocaleDateString();
-    const hora = agora.toLocaleTimeString();
-
-    let atividades = document.querySelectorAll("#atividades .atividade");
-    let resumo = {TOTAL: atividades.length, CONCLUÍDO:0, "NÃO CONCLUÍDO":0, "EM ANDAMENTO":0};
-    let textoAtividades = "";
-
-    atividades.forEach((a,i)=>{
-      const ordem = a.querySelector("input[type='text']").value.toUpperCase() || "-";
-      const instrumento = obterInstrumento(a).toUpperCase();
-      const descricao = a.querySelectorAll("textarea")[0].value.toUpperCase() || "-";
-      const realizadas = a.querySelectorAll("textarea")[1].value.toUpperCase() || "-";
-      const status = a.querySelectorAll("select")[1].value.toUpperCase() || "-";
-
-      if(resumo[status] !== undefined) resumo[status]++;
-      textoAtividades += `📑 ATIVIDADE ${i+1}\n📈 ORDEM: ${ordem}\n🔧 INSTRUMENTO: ${instrumento}\n📝 DESCRIÇÃO: ${descricao}\n⚙️ ATIVIDADES: ${realizadas}\n📍 STATUS FINAL: ${status}\n\n`;
-    });
-
-    let texto = `📑 RELATÓRIO DE ATIVIDADES DE INSTRUMENTAÇÃO\n\n📅 DATA: ${data}\n🕐 HORA: ${hora}\n👷 TÉCNICO(OS) RESPONSÁVEL(EIS): ${tecnicosSelecionados}\n\nRESUMO:\nTOTAL: ${resumo.TOTAL}\nCONCLUÍDO: ${resumo.CONCLUÍDO}\nNÃO CONCLUÍDO: ${resumo["NÃO CONCLUÍDO"]}\nEM ANDAMENTO: ${resumo["EM ANDAMENTO"]}\n\n${textoAtividades}`;
-
-    const url = "https://wa.me/?text=" + encodeURIComponent(texto);
-    window.open(url,"_blank");
-  }
-
-  document.getElementById('btn-pdf').addEventListener('click', gerarPDF);
-
-  window.adicionarAtividade = adicionarAtividade;
-  window.removerAtividade = removerAtividade;
-  window.compartilharWhatsApp = compartilharWhatsApp;
-  window.duplicarAtividade = duplicarAtividade;
-  window.marcarTodasConcluidas = marcarTodasConcluidas;
-
-  atividadesDiv.addEventListener('input', salvarRascunho);
+  window.adicionarAtividade=adicionarAtividade;
+  window.removerAtividade=removerAtividade;
+  window.duplicarAtividade=duplicarAtividade;
 });
 </script>
 </body>
