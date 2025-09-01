@@ -34,7 +34,7 @@
   .btn-share { background:#f1c40f; color:#fff; }
   .btn-share:hover { background:#d4ac0d; }
 
-  @media (max-width:600px){ header{font-size:1.2rem;} .atividade input, .atividade textarea{font-size:1rem;} footer button{font-size:0.9rem; padding:0.7rem;} }
+  @media (max-width:600px){ header{font-size:1.2rem;} .atividade input, .atividade textarea, .atividade select{font-size:1rem;} footer button{font-size:0.9rem; padding:0.7rem;} }
 </style>
 </head>
 <body>
@@ -68,7 +68,23 @@
     <input type="text" placeholder="Ex: 40803175" required>
     
     <label>🔧 TIPO DE INSTRUMENTO:</label>
-    <input type="text" placeholder="Ex: Transmissor de pressão" required>
+    <select required>
+      <option value="">SELECIONE</option>
+      <option>TRANSMISSOR DE TEMPERATURA</option>
+      <option>TRANSMISSOR DE PRESSÃO</option>
+      <option>TRANSMISSOR DE NÍVEL</option>
+      <option>TRANSMISSOR DE VAZÃO</option>
+      <option>VÁLVULA DE CONTROLE</option>
+      <option>VÁLVULA REDUTORA</option>
+      <option>TANQUE BALANÇA</option>
+      <option>BALANÇA DE BANCADA</option>
+      <option>MANÔMETRO</option>
+      <option>TERMÔMETRO</option>
+      <option>ELETRODO PHMETRO</option>
+      <option>CONDUTIVÍMETRO</option>
+      <option>CHAVE DE NÍVEL</option>
+      <option>OUTRO</option>
+    </select>
     
     <label>📝 DESCRIÇÃO DA ATIVIDADE:</label>
     <textarea placeholder="Descrição detalhada da atividade" required></textarea>
@@ -95,7 +111,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const atividadesDiv = document.getElementById("atividades");
 
-  // Limpar rascunho antigo para evitar loop no WhatsApp
   localStorage.removeItem("atividadesInstrumentacao");
 
   function salvarRascunho(){
@@ -128,13 +143,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function marcarTodasConcluidas(){
-    const selects = document.querySelectorAll("#atividades .atividade select");
+    const selects = document.querySelectorAll("#atividades .atividade select:last-of-type");
     selects.forEach(s=>s.value = "CONCLUÍDO");
     salvarRascunho();
     alert("TODAS AS ATIVIDADES FORAM MARCADAS COMO CONCLUÍDAS!");
   }
 
-  // Inicialização: apenas UMA atividade inicial
   adicionarAtividade();
 
   function gerarPDF(){
@@ -168,32 +182,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const fragment = document.createDocumentFragment();
     const atividades = document.querySelectorAll("#atividades .atividade");
     atividades.forEach((a,i)=>{
-      const inputs = a.querySelectorAll("input[type='text']");
-      const textareas = a.querySelectorAll("textarea");
-      const select = a.querySelector("select");
-      if(inputs.length > 0 && textareas.length >= 2 && select){
-        const ordem = inputs[0].value.toUpperCase() || "-";
-        const instrumento = inputs[1].value.toUpperCase() || "-";
-        const descricao = textareas[0].value.toUpperCase() || "-";
-        const realizadas = textareas[1].value.toUpperCase() || "-";
-        const status = select.value.toUpperCase() || "-";
+      const ordem = a.querySelector("input[type='text']").value.toUpperCase() || "-";
+      const instrumento = a.querySelector("select").value.toUpperCase() || "-";
+      const descricao = a.querySelectorAll("textarea")[0].value.toUpperCase() || "-";
+      const realizadas = a.querySelectorAll("textarea")[1].value.toUpperCase() || "-";
+      const status = a.querySelectorAll("select")[1].value.toUpperCase() || "-";
 
-        const bgColor = (i % 2 === 0) ? "#1f3b70" : "#3b5998";
+      const bgColor = (i % 2 === 0) ? "#1f3b70" : "#3b5998";
 
-        const div = document.createElement("div");
-        div.className = "atividade-pdf";
-        div.style.background = bgColor;
-        div.style.color = "#fff";
-        div.innerHTML = `
-          <p style="margin-bottom:0.8rem;font-weight:bold;color:#fff;">📊 ATIVIDADE ${i+1}</p>
-          <p>📈 ORDEM: ${ordem}</p>
-          <p>🔧 INSTRUMENTO: ${instrumento}</p>
-          <p>📝 DESCRIÇÃO:<br>${descricao}</p>
-          <p>⚙️ ATIVIDADES REALIZADAS:<br>${realizadas}</p>
-          <p>📍 STATUS FINAL: ${status}</p>
-        `;
-        fragment.appendChild(div);
-      }
+      const div = document.createElement("div");
+      div.className = "atividade-pdf";
+      div.style.background = bgColor;
+      div.style.color = "#fff";
+      div.innerHTML = `
+        <p style="margin-bottom:0.8rem;font-weight:bold;color:#fff;">📊 ATIVIDADE ${i+1}</p>
+        <p>📈 ORDEM: ${ordem}</p>
+        <p>🔧 INSTRUMENTO: ${instrumento}</p>
+        <p>📝 DESCRIÇÃO:<br>${descricao}</p>
+        <p>⚙️ ATIVIDADES REALIZADAS:<br>${realizadas}</p>
+        <p>📍 STATUS FINAL: ${status}</p>
+      `;
+      fragment.appendChild(div);
     });
     relatorio.appendChild(fragment);
     relatorio.innerHTML += `<div class="footer-page">PÁGINA <span class="pageNumber"></span></div>`;
@@ -227,19 +236,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let textoAtividades = "";
 
     atividades.forEach((a,i)=>{
-      const inputs = a.querySelectorAll("input[type='text']");
-      const textareas = a.querySelectorAll("textarea");
-      const select = a.querySelector("select");
-      if(inputs.length > 0 && textareas.length >= 2 && select){
-        const ordem = inputs[0].value.toUpperCase() || "-";
-        const instrumento = inputs[1].value.toUpperCase() || "-";
-        const descricao = textareas[0].value.toUpperCase() || "-";
-        const realizadas = textareas[1].value.toUpperCase() || "-";
-        const status = select.value.toUpperCase() || "-";
+      const ordem = a.querySelector("input[type='text']").value.toUpperCase() || "-";
+      const instrumento = a.querySelector("select").value.toUpperCase() || "-";
+      const descricao = a.querySelectorAll("textarea")[0].value.toUpperCase() || "-";
+      const realizadas = a.querySelectorAll("textarea")[1].value.toUpperCase() || "-";
+      const status = a.querySelectorAll("select")[1].value.toUpperCase() || "-";
 
-        if(resumo[status] !== undefined) resumo[status]++;
-        textoAtividades += `📝 ATIVIDADE ${i+1}\n📝 ORDEM: ${ordem}\n🔧 INSTRUMENTO: ${instrumento}\n📝 DESCRIÇÃO: ${descricao}\n⚙️ ATIVIDADES: ${realizadas}\n📍 STATUS FINAL: ${status}\n\n`;
-      }
+      if(resumo[status] !== undefined) resumo[status]++;
+      textoAtividades += `📝 ATIVIDADE ${i+1}\n📝 ORDEM: ${ordem}\n🔧 INSTRUMENTO: ${instrumento}\n📝 DESCRIÇÃO: ${descricao}\n⚙️ ATIVIDADES: ${realizadas}\n📍 STATUS FINAL: ${status}\n\n`;
     });
 
     let texto = `📑 RELATÓRIO DE ATIVIDADES DE INSTRUMENTAÇÃO\n\n📅 DATA: ${data}\n🕐 HORA: ${hora}\n👷 TÉCNICO(OS) RESPONSÁVEL(EIS): ${tecnicosSelecionados}\n\nRESUMO:\nTOTAL: ${resumo.TOTAL}\nCONCLUÍDO: ${resumo.CONCLUÍDO}\nNÃO CONCLUÍDO: ${resumo["NÃO CONCLUÍDO"]}\nEM ANDAMENTO: ${resumo["EM ANDAMENTO"]}\n\n${textoAtividades}`;
