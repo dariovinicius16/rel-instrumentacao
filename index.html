@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Relatório de Atividades - Instrumentação</title>
+<title>RELATÓRIO DE ATIVIDADES - INSTRUMENTAÇÃO</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
-  * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; scroll-behavior:smooth; }
+  * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; scroll-behavior:smooth; text-transform:uppercase; }
   html, body { height:100%; background:#f4f5f7; }
 
   header {
@@ -34,11 +34,11 @@
 
   .atividade:hover { transform: translateY(-5px); box-shadow:0 20px 40px rgba(0,0,0,0.15); filter:brightness(1.03); }
 
-  .atividade label { font-weight:600; margin-bottom:0.5rem; display:block; text-transform:uppercase; color:#4b3f72; }
+  .atividade label { font-weight:600; margin-bottom:0.5rem; display:block; color:#4b3f72; }
 
   .atividade input, .atividade textarea, .atividade select {
     width:100%; padding:1rem; margin-bottom:1rem; border-radius:16px; border:1px solid #d1d5db;
-    background:#f9fafc; font-size:1rem; transition: all 0.3s; text-transform:uppercase; outline:none;
+    background:#f9fafc; font-size:1rem; transition: all 0.3s; outline:none; text-transform:uppercase;
   }
   .atividade input:focus, .atividade textarea:focus, .atividade select:focus {
     border:2px solid #6a11cb; box-shadow:0 0 12px rgba(106,17,203,0.2); background:#fff;
@@ -89,7 +89,8 @@
 </head>
 <body>
 <header>
-  📋 Instrumentação GME - M. Dias Branco
+  📋 INSTRUMENTAÇÃO <br>
+   GME - M. DIAS BRANCO
   <img src="https://media-genial-analisa.genialinvestimentos.com.br/wp-content/uploads/2021/12/22171726/m-dias-branco-logo-azul.png" alt="Logo M. Dias Branco">
 </header>
 
@@ -140,7 +141,7 @@
     <textarea placeholder="Liste as atividades realizadas" required></textarea>
 
     <label>📍 STATUS FINAL:</label>
-    <select>
+    <select class="status-final">
       <option>SELECIONE</option>
       <option>CONCLUÍDO</option>
       <option>NÃO CONCLUÍDO</option>
@@ -164,8 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const select = atividade.querySelector(".tipo-instrumento");
     const outroInput = atividade.querySelector(".outro-instrumento");
     select.addEventListener("change", () => {
-      if(select.value==="OUTRO"){ outroInput.style.display="block"; outroInput.required=true; }
-      else{ outroInput.style.display="none"; outroInput.required=false; outroInput.value=""; }
+      if(select.value==="OUTRO"){ 
+        outroInput.style.display="block"; 
+        outroInput.required=true; 
+      } else { 
+        outroInput.style.display="none"; 
+        outroInput.required=false; 
+        outroInput.value=""; 
+      }
       salvarRascunho();
     });
   }
@@ -199,12 +206,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function compartilharWhatsApp(){
-    const tecnico = document.getElementById("select-tecnico").value || "-";
+    const tecnico = (document.getElementById("select-tecnico").value || "-").toUpperCase();
     const atividades = Array.from(atividadesDiv.children);
     let total = atividades.length;
-    let concluido = atividades.filter(a => a.querySelector("select").value==="CONCLUÍDO").length;
-    let naoConcluido = atividades.filter(a => a.querySelector("select").value==="NÃO CONCLUÍDO").length;
-    let andamento = atividades.filter(a => a.querySelector("select").value==="EM ANDAMENTO").length;
+    let concluido = atividades.filter(a => a.querySelector(".status-final")?.value==="CONCLUÍDO").length;
+    let naoConcluido = atividades.filter(a => a.querySelector(".status-final")?.value==="NÃO CONCLUÍDO").length;
+    let andamento = atividades.filter(a => a.querySelector(".status-final")?.value==="EM ANDAMENTO").length;
 
     const dataAtual = new Date();
     const dataFormat = dataAtual.toLocaleDateString('pt-BR');
@@ -213,12 +220,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let msg = `RELATÓRIO DE ATIVIDADES DE INSTRUMENTAÇÃO\n\n📅 DATA: ${dataFormat}\n🕐 HORA: ${horaFormat}\n👷 TÉCNICO(OS) RESPONSÁVEL(EIS): ${tecnico}\n\nRESUMO:\nTOTAL: ${total}\nCONCLUÍDO: ${concluido}\nNÃO CONCLUÍDO: ${naoConcluido}\nEM ANDAMENTO: ${andamento}\n\n`;
 
     atividades.forEach((a, i)=>{
-      const ordem = a.querySelector('input')?.value || "-";
-      const instrumento = a.querySelector('.tipo-instrumento')?.value || "-";
-      const descricao = a.querySelectorAll('textarea')[0]?.value || "-";
-      const atividadesRealizadas = a.querySelectorAll('textarea')[1]?.value || "-";
-      const status = a.querySelector('select')?.value || "SELECIONE";
-      msg += `📑 ATIVIDADE ${i+1}:\n 📈 ORDEM: ${ordem}\n 🔧 INSTRUMENTO: ${instrumento}\n 📝 DESCRIÇÃO: ${descricao}\n ⚙ ATIVIDADES: ${atividadesRealizadas}\n 📍 STATUS FINAL: ${status}\n\n`;
+      const ordem = (a.querySelector('input')?.value || "-").toUpperCase();
+      const selectInstr = a.querySelector('.tipo-instrumento');
+      const outroInput = a.querySelector('.outro-instrumento');
+      const instrumento = ((selectInstr.value==="OUTRO" && outroInput.value.trim()!=="") ? outroInput.value : selectInstr.value || "-").toUpperCase();
+      const descricao = (a.querySelectorAll('textarea')[0]?.value || "-").toUpperCase();
+      const atividadesRealizadas = (a.querySelectorAll('textarea')[1]?.value || "-").toUpperCase();
+      const status = (a.querySelector('.status-final')?.value || "SELECIONE").toUpperCase();
+      msg += `📑 ATIVIDADE: ${i+1}:\n\n 📈 ORDEM: ${ordem}\n\n 🔧 INSTRUMENTO:\n ${instrumento}\n\n 📝 DESCRIÇÃO:\n ${descricao}\n\n ⚙ ATIVIDADES:\n ${atividadesRealizadas}\n\n 📍 STATUS FINAL: ${status}\n\n`;
     });
 
     const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
